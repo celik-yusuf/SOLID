@@ -4,45 +4,46 @@ package dip;
 // Top-level modules should not depend on lower-level modules.
 //(Üst seviyeli modüller, alt seviyeli modüllere bağlı olmamalı.)
 
-class Publisher
-{
-    private $socialMedia;
+interface Message {
+    void sendMessage();
+}
 
-    public function __construct(SocialMediaInterface $socialMedia) {
-        $this->socialMedia = $socialMedia;
+public class Email implements Message {
+
+    @Override
+    public void sendMessage() {
+        sendEmail();
     }
 
-    public function publish() {
-        return $this->socialMedia->getComment();
+    private void sendEmail() {
+        //Send email
     }
 }
 
-interface SocialMediaInterface {
-    public function setComment(string $comment);
-    public function getComment(): string;
-}
+public class SMS implements Message {
 
-class Twitter implements SocialMediaInterface {
-    private $comment;
-
-    public function setComment(string $comment) {
-        $this->comment = $comment;
+    @Override
+    public void sendMessage() {
+        sendSMS();
     }
 
-    public function getComment(): string {
-        return $this->comment;
+    private void sendSMS() {
+        //Send sms
     }
 }
 
-class Facebook implements SocialMediaInterface {
-    private $comment;
+public class Notification {
 
-    public function setComment(string $comment) {
-        $this->comment = $comment;
+    private List<Message> messages;
+
+    public Notification(List<Message> messages) {
+        this.messages = messages;
     }
 
-    public function getComment(): string {
-        return $this->comment;
+    public void sender() {
+        for (Message message : messages) {
+            message.sendMessage();
+        }
     }
 }
 
@@ -51,16 +52,5 @@ class Facebook implements SocialMediaInterface {
 public class Main {
     public static void main(String[] args) {
 
-        $twitter = new Twitter();
-        $twitter->setComment('Twitter comment');
-
-        $publisher = new Publisher($twitter);
-        echo $publisher->publish();
-
-        $facebook = new Facebook();
-        $facebook->setComment('Facebook comment');
-
-        $publisher = new Publisher($facebook);
-        echo $publisher->publish();
     }
 }
